@@ -1,14 +1,14 @@
 use core::time;
-use std::thread;
 use rand::Rng;
+use std::thread;
 
-const WIDTH: usize = 100;
-const HEIGHT: usize = 50;
+const WIDTH: usize = 94;
+const HEIGHT: usize = 78;
 
 fn print_field(arr: &[[bool; WIDTH]; HEIGHT]) {
     for row in arr {
         for &val in row {
-            let char = if val { "▄" } else { " " };
+            let char = if val { "x" } else { "." };
             print!("{char} ");
         }
         println!();
@@ -27,12 +27,12 @@ fn random_initialize(arr: &mut [[bool; WIDTH]; HEIGHT]) {
 fn next_generation(frame_a: &[[bool; WIDTH]; HEIGHT], frame_b: &mut [[bool; WIDTH]; HEIGHT]) {
     for (y, row) in frame_a.iter().enumerate() {
         for (x, _) in row.iter().enumerate() {
-
             let mut neighbours = 0;
-
             for dy in [-1, 0, 1] {
                 for dx in [-1, 0, 1] {
-                    if dx == 0 && dy == 0 { continue; }
+                    if dx == 0 && dy == 0 {
+                        continue;
+                    }
                     let ny = (y as isize + dy + HEIGHT as isize) % HEIGHT as isize;
                     let nx = (x as isize + dx + WIDTH as isize) % WIDTH as isize;
                     if ny >= 0 && ny < HEIGHT as isize && nx >= 0 && nx < WIDTH as isize {
@@ -52,13 +52,12 @@ fn next_generation(frame_a: &[[bool; WIDTH]; HEIGHT], frame_b: &mut [[bool; WIDT
     }
 }
 
-
 fn main() {
     let mut frame_a: [[bool; WIDTH]; HEIGHT] = [[false; WIDTH]; HEIGHT];
     let mut frame_b: [[bool; WIDTH]; HEIGHT] = [[false; WIDTH]; HEIGHT];
 
     random_initialize(&mut frame_a);
-   
+
     loop {
         print!("\x1B[2J\x1B[1;1H");
         print_field(&frame_a);
@@ -67,3 +66,4 @@ fn main() {
         thread::sleep(time::Duration::from_millis(10));
     }
 }
+
